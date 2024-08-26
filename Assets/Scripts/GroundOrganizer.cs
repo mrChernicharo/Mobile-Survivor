@@ -10,7 +10,7 @@ public class GroundOrganizer : MonoBehaviour
     public GameObject quadPrefab;
     public int rows = 3;
     public int columns = 3;
-    private float quadSize = 16f;
+    private readonly float quadSize = 16f;
     private List<List<GameObject>> quadGrid = new List<List<GameObject>>();
     private GameObject centralQuad;
 
@@ -61,10 +61,10 @@ public class GroundOrganizer : MonoBehaviour
     {
 
         List<List<Vector3>> positions = new List<List<Vector3>>();
-        for (int i = 1; i > -2; i--)
+        for (int i = 1; i >= -1; i--)
         {
             List<Vector3> row = new List<Vector3>();
-            for (int j = -1; j < 2; j++)
+            for (int j = -1; j <= 1; j++)
             {
                 Vector3 pos = new Vector3(j * quadSize, i * quadSize, 1f);
                 row.Add(pos);

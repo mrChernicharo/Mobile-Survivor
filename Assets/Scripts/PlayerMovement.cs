@@ -7,10 +7,34 @@ public class PlayerMovement : MonoBehaviour
 
     public Joystick joystick;
     public float playerSpeed = 3f;
+
+    public Transform playerTransform;
     private Rigidbody2D rb;
+    private Animator animator;
+    private bool isFacingLeft = false;
+
     void Start()
     {
         rb = GetComponentInChildren<Rigidbody2D>();
+        animator = GetComponentInChildren<Animator>();
+        // playerTransform = GetComponentInChildren<Transform>();
+    }
+
+    void FlipSprite()
+    {
+
+        if (isFacingLeft)
+        {
+            playerTransform.localScale = new Vector3(-1f, 1f, 1f);
+            // playerTransform.localScale.Set(-1f, 1f, 1f);
+            // playerTransform.position.Scale(new Vector3(-1f, 1f, 1f));
+        }
+        else
+        {
+            // playerTransform.localScale.Set(1f, 1f, 1f);
+            playerTransform.localScale = new Vector3(1f, 1f, 1f);
+            // playerTransform.position.Scale(new Vector3(1f, 1f, 1f));
+        }
     }
 
     void FixedUpdate()
@@ -22,6 +46,19 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             rb.velocity = Vector2.zero;
+        }
+
+        if (joystick.Direction.x < 0 && isFacingLeft == false)
+        {
+            Debug.Log($"Flip! {joystick.Direction.x}");
+            isFacingLeft = true;
+            FlipSprite();
+        }
+        else if (joystick.Direction.x > 0 && isFacingLeft == true)
+        {
+            Debug.Log($"Flip! {joystick.Direction.x}");
+            isFacingLeft = false;
+            FlipSprite();
         }
     }
 
