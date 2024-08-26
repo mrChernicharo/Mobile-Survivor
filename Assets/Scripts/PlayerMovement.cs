@@ -42,10 +42,12 @@ public class PlayerMovement : MonoBehaviour
         if (joystick.Direction.y != 0)
         {
             rb.velocity = new Vector2(joystick.Direction.x * playerSpeed, joystick.Direction.y * playerSpeed);
+            animator.SetBool("isMoving", true);
         }
         else
         {
             rb.velocity = Vector2.zero;
+            animator.SetBool("isMoving", false);
         }
 
         if (joystick.Direction.x < 0 && isFacingLeft == false)
