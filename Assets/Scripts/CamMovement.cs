@@ -6,7 +6,7 @@ public class CamMovement : MonoBehaviour
 {
     public Transform player;
     public Vector3 offset;
-    public float camSpeed = 1.5f;
+    public float camSpeed = 2f;
 
     void Update()
     {

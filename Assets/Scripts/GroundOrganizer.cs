@@ -5,17 +5,56 @@ using UnityEngine;
 
 public class GroundOrganizer : MonoBehaviour
 {
+    public GameObject player;
+    private Vector3 playerPos;
     public GameObject quadPrefab;
     public int rows = 3;
     public int columns = 3;
-
     private float quadSize = 16f;
     private List<List<GameObject>> quadGrid = new List<List<GameObject>>();
+    private GameObject centralQuad;
+
 
 
     void Start()
     {
         CreateQuadGrid();
+        StartCoroutine(PrintPlayerPos());
+    }
+
+    private IEnumerator PrintPlayerPos()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(2f);
+
+            playerPos = player.GetComponent<Transform>().position;
+            Debug.Log(playerPos);
+            // Debug.Log(centralQuad.name);
+
+            if (playerPos.y > centralQuad.transform.position.y + 8f)
+            {
+                Debug.Log("Crossed Top");
+                MoveBottomUp();
+
+            }
+            if (playerPos.y < centralQuad.transform.position.y - 8f)
+            {
+                Debug.Log("Crossed Bottom");
+                MoveTopDown();
+            }
+            if (playerPos.x > centralQuad.transform.position.x + 8f)
+            {
+                Debug.Log("Crossed Right");
+                MoveLeftRight();
+
+            }
+            if (playerPos.x < centralQuad.transform.position.x - 8f)
+            {
+                Debug.Log("Crossed Left");
+                MoveRightLeft();
+            }
+        }
     }
 
     void CreateQuadGrid()
@@ -39,25 +78,51 @@ public class GroundOrganizer : MonoBehaviour
             List<GameObject> row = new List<GameObject>();
             for (int j = 0; j < columns; j++)
             {
-                GameObject newQuad = Instantiate(quadPrefab, transform);
-                newQuad.transform.position = positions[i][j];
-                newQuad.name = $"Quad {(i * 3) + j}";
-                // Create a new Material with a random color
-                Material newMaterial = new Material(quadPrefab.GetComponent<Renderer>().sharedMaterial);
-                newMaterial.color = UnityEngine.Random.ColorHSV();
-                newQuad.GetComponent<Renderer>().material = newMaterial;
-
+                GameObject newQuad = CreateQuad(positions, i, j);
                 row.Add(newQuad);
             }
             quadGrid.Add(row);
         }
+
+        UpdateGridCenter();
         Debug.Log("quadGrid created");
         Debug.Log(quadPrefab);
+    }
+
+
+
+    GameObject CreateQuad(List<List<Vector3>> positions, int i, int j)
+    {
+        GameObject newQuad = Instantiate(quadPrefab, transform);
+        newQuad.transform.position = positions[i][j];
+        newQuad.name = $"Quad {(i * 3) + j}";
+
+
+        // Create a new Material with a random color
+        Material mat = new Material(Shader.Find("Unlit/Color"));
+        mat.color = UnityEngine.Random.ColorHSV();
+
+        Renderer quadRenderer = newQuad.GetComponent<Renderer>();
+        quadRenderer.material = mat;
+        quadRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        quadRenderer.receiveShadows = false;
+
+        // remove MeshCollider
+        Destroy(newQuad.GetComponent<MeshCollider>());
+
+        return newQuad;
+    }
+
+
+    void UpdateGridCenter()
+    {
+        centralQuad = quadGrid[1][1];
     }
 
     [ContextMenu("DebugQuadGrid")]
     void DebugQuadGrid()
     {
+        Debug.Log("----------------------------------------");
         for (int i = 0; i < rows; i++)
         {
             string rowString = "[ ";
@@ -70,21 +135,10 @@ public class GroundOrganizer : MonoBehaviour
             rowString += " ]";
             Debug.Log(rowString);
         }
+        Debug.Log($"central quad is: {centralQuad.name}");
     }
 
-
-
-
-    // [ContextMenu("ResetMatrix")]
-    // void ResetMatrix()
-    // {
-    //     matrix = new int[][] {
-    //         new int[] { 0, 1, 2 },
-    //         new int[] { 3, 4, 5 },
-    //         new int[] { 6, 7, 8 }
-    //     };
-    // }
-
+    #region QuadJumps
 
     [ContextMenu("MoveTopDown")]
     void MoveTopDown()
@@ -94,9 +148,16 @@ public class GroundOrganizer : MonoBehaviour
         quadGrid[0] = quadGrid[1];
         quadGrid[1] = quadGrid[2];
         quadGrid[2] = temp;
+
+
+        foreach (GameObject quad in quadGrid[2])
+        {
+            quad.transform.position =
+                new Vector3(quad.transform.position.x, quad.transform.position.y - quadSize * 3, 1f);
+        }
+        UpdateGridCenter();
         DebugQuadGrid();
     }
-
 
     [ContextMenu("MoveBottomUp")]
     void MoveBottomUp()
@@ -106,6 +167,13 @@ public class GroundOrganizer : MonoBehaviour
         quadGrid[2] = quadGrid[1];
         quadGrid[1] = quadGrid[0];
         quadGrid[0] = temp;
+
+        foreach (GameObject quad in quadGrid[0])
+        {
+            quad.transform.position =
+                new Vector3(quad.transform.position.x, quad.transform.position.y + quadSize * 3, 1f);
+        }
+        UpdateGridCenter();
         DebugQuadGrid();
     }
 
@@ -119,7 +187,11 @@ public class GroundOrganizer : MonoBehaviour
             quadGrid[i][0] = quadGrid[i][1];
             quadGrid[i][1] = quadGrid[i][2];
             quadGrid[i][2] = temp;
+
+            quadGrid[i][2].transform.position =
+                new Vector3(quadGrid[i][2].transform.position.x + 3 * quadSize, quadGrid[i][2].transform.position.y, 1f);
         }
+        UpdateGridCenter();
         DebugQuadGrid();
     }
 
@@ -133,8 +205,13 @@ public class GroundOrganizer : MonoBehaviour
             quadGrid[i][2] = quadGrid[i][1];
             quadGrid[i][1] = quadGrid[i][0];
             quadGrid[i][0] = temp;
+
+            quadGrid[i][0].transform.position =
+                new Vector3(quadGrid[i][0].transform.position.x - 3 * quadSize, quadGrid[i][0].transform.position.y, 1f);
         }
+        UpdateGridCenter();
         DebugQuadGrid();
     }
 
+    #endregion
 }
