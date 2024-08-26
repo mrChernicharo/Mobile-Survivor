@@ -11,9 +11,6 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponentInChildren<Rigidbody2D>();
-
-        StartCoroutine(LogPosition());
-
     }
 
     void FixedUpdate()
@@ -27,15 +24,5 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = Vector2.zero;
         }
     }
-
-    IEnumerator LogPosition()
-    {
-        while (true)
-        {
-            Debug.Log($"Player postition: {rb.position}");
-            yield return new WaitForSeconds(2f);
-        }
-    }
-
 
 }
