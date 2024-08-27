@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class GroundOrganizer : MonoBehaviour
+public class GroundManager : MonoBehaviour
 {
     public GameObject player;
     private Vector3 playerPos;
@@ -106,6 +107,7 @@ public class GroundOrganizer : MonoBehaviour
         quadRenderer.material = mat;
         quadRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         quadRenderer.receiveShadows = false;
+        quadRenderer.sortingOrder = 1;
 
         // remove MeshCollider
         Destroy(newQuad.GetComponent<MeshCollider>());

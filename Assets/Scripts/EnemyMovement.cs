@@ -1,20 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyMovement : MonoBehaviour
 {
-    public Transform playerTransform;
+    private NavMeshAgent agent;
 
-    public float timeToTurn = 0.8f;
+    public Transform playerTransform;
+    private Renderer spriteRenderer;
+
+    public float timeToTurn = 1f;
+    public float timeToUpdateOrderInLayer = 0.25f;
+    public float walkSpeed = 1f;
+
 
     private bool isFacingRight = true;
     void Start()
     {
-        StartCoroutine(FacePlayer());
+        agent = GetComponent<NavMeshAgent>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        StartCoroutine(FlipToFacePlayer());
+        StartCoroutine(UpdateOrderInLayer());
+
+        agent.updateRotation = false;
+        agent.updateUpAxis = false;
     }
 
-    IEnumerator FacePlayer()
+    IEnumerator FlipToFacePlayer()
     {
         while (true)
         {
@@ -34,5 +47,26 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
+    IEnumerator UpdateOrderInLayer()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(timeToUpdateOrderInLayer);
 
+            if (playerTransform.position.y > gameObject.transform.position.y && spriteRenderer.sortingOrder == 0)
+            {
+                spriteRenderer.sortingOrder = 1;
+
+            }
+            else if (playerTransform.position.y < gameObject.transform.position.y && spriteRenderer.sortingOrder == 1)
+            {
+                spriteRenderer.sortingOrder = 0;
+            }
+        }
+    }
+
+    void Update()
+    {
+        agent.SetDestination(playerTransform.position);
+    }
 }
