@@ -8,6 +8,7 @@ public class EnemyMovement : MonoBehaviour
     private NavMeshAgent agent;
 
     public Transform playerTransform;
+    // public Collider2D playerCollider;
     private Renderer spriteRenderer;
 
     public float timeToTurn = 1f;
@@ -20,11 +21,13 @@ public class EnemyMovement : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        StartCoroutine(FlipToFacePlayer());
-        StartCoroutine(UpdateOrderInLayer());
-
+        // Collider2D collider = GetComponent<Collider2D>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+
+        StartCoroutine(FlipToFacePlayer());
+        StartCoroutine(UpdateOrderInLayer());
+        // playerCollider.friction
     }
 
     IEnumerator FlipToFacePlayer()
@@ -68,5 +71,9 @@ public class EnemyMovement : MonoBehaviour
     void Update()
     {
         agent.SetDestination(playerTransform.position);
+
+        // if (agent.velocity.y > 1f) {
+        //     Debug.Log()
+        // }
     }
 }
