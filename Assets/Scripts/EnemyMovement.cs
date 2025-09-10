@@ -11,22 +11,26 @@ public class EnemyMovement : MonoBehaviour
     // public Collider2D playerCollider;
     private Renderer spriteRenderer;
 
-    public float timeToTurn = 1f;
-    public float timeToUpdateOrderInLayer = 0.25f;
-    public float walkSpeed = 1f;
+    [SerializeField] private float timeToTurn = 0.25f;
+    [SerializeField] private float walkSpeed = 1f;
 
 
     private bool isFacingRight = true;
-    void Start()
+
+    void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         // Collider2D collider = GetComponent<Collider2D>();
+
+    }
+    void Start()
+    {
+
         agent.updateRotation = false;
         agent.updateUpAxis = false;
 
         StartCoroutine(FlipToFacePlayer());
-        StartCoroutine(UpdateOrderInLayer());
         // playerCollider.friction
     }
 
@@ -47,24 +51,6 @@ public class EnemyMovement : MonoBehaviour
                 isFacingRight = true;
             }
 
-        }
-    }
-
-    IEnumerator UpdateOrderInLayer()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(timeToUpdateOrderInLayer);
-
-            if (playerTransform.position.y > gameObject.transform.position.y && spriteRenderer.sortingOrder == 0)
-            {
-                spriteRenderer.sortingOrder = 1;
-
-            }
-            else if (playerTransform.position.y < gameObject.transform.position.y && spriteRenderer.sortingOrder == 1)
-            {
-                spriteRenderer.sortingOrder = 0;
-            }
         }
     }
 

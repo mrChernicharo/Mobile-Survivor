@@ -1800,7 +1800,7 @@ MonoBehaviour:
   playerTransform: {fileID: 1209828982}
   timeToTurn: 1
   timeToUpdateOrderInLayer: 0.25
-  walkSpeed: 1
+  walkSpeed: 2
 --- !u!95 &705690045
 Animator:
   serializedVersion: 5
