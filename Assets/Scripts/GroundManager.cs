@@ -20,16 +20,17 @@ public class GroundManager : MonoBehaviour
     void Start()
     {
         CreateQuadGrid();
-        StartCoroutine(PrintPlayerPos());
+        StartCoroutine(UpdateGroundQuads());
     }
 
-    private IEnumerator PrintPlayerPos()
+    private IEnumerator UpdateGroundQuads()
     {
         while (true)
         {
             yield return new WaitForSeconds(2f);
 
-            playerPos = player.GetComponent<Transform>().position;
+            // playerPos = player.GetComponent<Transform>().position;
+            playerPos = player.transform.position;
             Debug.Log(playerPos);
             // Debug.Log(centralQuad.name);
 

@@ -30,8 +30,8 @@ Library: /Users/fmeloche/Desktop/dev/unity/Mobile Survivor/Temp/BurstOutput/temp
 --assembly-defines=Unity.Subsystem.Registration;
 --assembly-defines=Unity.Mathematics;
 --assembly-defines=Unity.VisualScripting.State;
---assembly-defines=Unity.Notifications.Android;
 --assembly-defines=Cinemachine;
+--assembly-defines=Unity.Notifications.Android;
 --assembly-defines=Unity.Collections.LowLevel.ILSupport;
 --assembly-defines=Unity.VisualScripting.Antlr3.Runtime;
 --assembly-defines=Unity.Burst.Unsafe;
